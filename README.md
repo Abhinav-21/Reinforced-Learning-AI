@@ -1,119 +1,57 @@
-<h1 align='center' style='color:cyan'><b> CAR-RACING-v2 </b></h1>
+# Reinforcement Learning for Game Playing
 
-<h3><b>IMPORTING DEPENDENCIES</b></h3>
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+A project that demonstrates the use of OpenAI Gym and Stable Baselines3 to train reinforcement learning models to play CartPole and CarRacing games.
 
-```python
-import os
-import gym
-from stable_baselines3 import PPO
-from stable_baselines3.common.vec_env import DummyVecEnv
-from stable_baselines3.common.vec_env import SubprocVecEnv
-from stable_baselines3.common.evaluation import evaluate_policy
-from gym.wrappers import GrayScaleObservation
-import warnings
+## Table of Contents
+- [Description](#description)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Results](#results)
+- [Contributing](#contributing)
+- [License](#license)
 
-warnings.filterwarnings("ignore")
-```
+## Description
 
-<h3><b>CREATING ENVIRONMENT</b></h3>
+This project showcases the training of reinforcement learning models using the Proximal Policy Optimization (PPO) algorithm from Stable Baselines3. The models are trained to play two games: CartPole and CarRacing, provided by OpenAI Gym.
 
+The goal of the CartPole game is to balance a pole on a cart by moving the cart left or right. The CarRacing game requires driving a car through a racing track, navigating curves and avoiding obstacles.
 
-```python
-environment_name = "CarRacing-v2"
-log_path = os.path.join("Training", "Logs")
+The project includes code for training the models, saving the trained models, and evaluating their performance. It also provides visualization of the game environment during evaluation.
 
-# Create the environment
+## Installation
 
-env = gym.make(environment_name, domain_randomize=True, render_mode='human')
-env = GrayScaleObservation(env, keep_dim=True)
-num_envs = 4  
-env = SubprocVecEnv([lambda: gym.make(environment_name, domain_randomize=True) for _ in range(num_envs)])
-```
+1. Clone the repository:
 
-<h3><b>CREATING PPO MODEL, TRAINING IT AND SAVING IT</b></h3>
+   ```bash
+   git clone https://github.com/Abhinav-21/RL-AI.git
+   ```
+2. Install the required dependencies:
 
+   ```bash
+   pip install -r requirements.txt
+   ```
+## Usage
 
-```python
-# Create the PPO model
-model = PPO('MlpPolicy', env, verbose=1, tensorboard_log=log_path)
+#### To use the reinforcement learning game agents, follow the steps below:
 
-# Train the model
-model.learn(total_timesteps=30000)
+1. Open the Jupyter Notebook file `cartpole.ipynb` for training the CartPole agent or `car.ipynb` for training the CarRacing agent.
+2. Follow the instructions in the notebook to set up the training environment and configure the hyperparameters.
+3. Run the notebook cells to start the training process.
+4. Monitor the training progress and observe how the agents improve their gameplay over time.
+5. The trained models will be saved in the "Saved_Models" directory.
+6. Follow the instructions in the notebook to load the pre-trained models and set up the testing environment.
+7. Run the notebook cells to observe the agents' gameplay and evaluate their performance.
+8. Analyze the results and compare the agents' performance under different scenarios or configurations.
 
-# Save the trained model
-PPO_path = os.path.join("Training", "Saved_Models", "PPO_Model_CarRace")
-model.save(PPO_path)
-```
+Feel free to explore and modify the notebooks according to your specific needs. The comments and documentation within the notebooks provide further guidance on the code and usage.
 
-<h3><b>LOADING TRAINED MODEL, FOR FURTHER TRAINING</b></h3>
+## Contributing
 
+Contributions to this project are welcome! If you have any ideas, suggestions, or bug reports, please feel free to open an issue or submit a pull request. Let's collaborate and improve the game-playing agents together.
 
-```python
-PPO_path = os.path.join("Training", "Saved_Models", "PPO_Model_CarRace")
-# Load model
-model = PPO.load(PPO_path, env=env)
+## License
 
-# Train the model
-model.learn(total_timesteps=20000, progress_bar=True)
-
-# Save the trained model
-model.save(PPO_path)
-```
-
-<h3><b>TESTING THE TRAINED MODEL</b></h3>
-
-
-```python
-# Load the saved model
-PPO_path = os.path.join("Training", "Saved_Models", "PPO_Model_CarRace")
-model = PPO.load(PPO_path, env=env)
-
-# Create a new environment for evaluation
-env = gym.make(environment_name, render_mode='human')
-env = env = GrayScaleObservation(env, keep_dim=True)
-num_envs = 1
-env = SubprocVecEnv([lambda: gym.make(environment_name, domain_randomize=True) for _ in range(num_envs)])
-
-obs = env.reset()
-done = False
-score = 0 
-
-while not done:
-    env.render()
-    action, _ = model.predict(obs)
-    obs, reward, done, info = env.step(action)
-    score += reward
-    
-print(f'Score:{score}')
-
-env.close()
-```
-
-<h3><b>TESTING THE HEAVILY TRAINED MODEL</b></h3>
-
-
-```python
-environment_name = "CarRacing-v2"
-log_path = os.path.join("Training", "Logs")
-env = gym.make(environment_name,  render_mode='human')
-env = DummyVecEnv([lambda: env])
-
-# Load the saved model
-PPO_path = os.path.join("Training", "Saved_Models", "PPO_CarRace_Trained")
-model = PPO.load(PPO_path, env=env)
-
-obs = env.reset()
-done = False
-score = 0 
-
-while not done:
-    env.render()
-    action, _ = model.predict(obs)
-    obs, reward, done, info = env.step(action)
-    score += reward
-    
-print(f'Score:{score}')
-
-env.close()
-```
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+   
